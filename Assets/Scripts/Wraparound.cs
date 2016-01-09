@@ -3,13 +3,14 @@ using System.Collections;
 
 public class Wraparound : MonoBehaviour {
 
-	public Configuration config;
+	private Configuration config;
 
 	private Rigidbody2D rb2D;
 
 	// Use this for initialization
 	void Start () {
 		rb2D = GetComponent<Rigidbody2D>();
+		config = GameObject.Find ("StageLogic").GetComponent<Configuration> ();
 	}
 	
 	// Update is called once per frame
