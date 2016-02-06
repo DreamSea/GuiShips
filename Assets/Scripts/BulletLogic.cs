@@ -9,12 +9,30 @@ public class BulletLogic : MonoBehaviour {
 
     private Rigidbody2D rb2D;
 
+	private static Object prefab = Resources.Load ("Prefabs/playerBullet");
+
+	public static GameObject SpawnBullet(Vector2 location, Vector2 direction)
+	{
+		Debug.Log (prefab);
+		GameObject newBullet = Instantiate (prefab, location, Quaternion.identity) as GameObject;
+
+		BulletLogic logic = newBullet.GetComponent<BulletLogic> ();
+		logic.SetDirection (direction);
+		logic.InitBullet ();
+
+		return newBullet;
+	}
+
+	void InitBullet()
+	{
+		rb2D = GetComponent<Rigidbody2D>();
+		maxSpeed = 250;
+		rb2D.AddRelativeForce(direction * maxSpeed);
+	}
+
     void Start()
     {
-        maxSpeed = 250;
-        rb2D = GetComponent<Rigidbody2D>();
-        direction = PlayerLogic.getDirection();
-        rb2D.AddRelativeForce(PlayerLogic.getDirection() * maxSpeed);
+ 
     }
 
     void FixedUpdate()
@@ -23,4 +41,8 @@ public class BulletLogic : MonoBehaviour {
         // On collision stuff
 
     }
+
+	void SetDirection(Vector2 direction) {
+		this.direction = direction;
+	}
 }

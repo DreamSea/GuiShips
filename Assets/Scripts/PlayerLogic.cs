@@ -39,15 +39,15 @@ public class PlayerLogic : MonoBehaviour {
 			rb2D.velocity = rb2D.velocity.normalized * maxSpeed;
 		}
 
-        // while (Input.GetKey("space"))
-        //     spawnBulletA();
+        if (Input.GetKey("space"))
+             spawnBulletA();
             
 	}
 
     //
     private void spawnBulletA()
     {
-
-        Instantiate(enemyA, new Vector3(xSpawn + config.getLeftBoundary(), ySpawn + config.getBottomBoundary(), 0), Quaternion.identity);
+		BulletLogic.SpawnBullet (rb2D.position, getDirection());
+        //Instantiate(enemyA, new Vector3(xSpawn + config.getLeftBoundary(), ySpawn + config.getBottomBoundary(), 0), Quaternion.identity);
     }
 }
