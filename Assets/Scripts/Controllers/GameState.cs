@@ -20,6 +20,7 @@ public class GameState : MonoBehaviour {
 		try {
 			playerData = SaveLoad.Load ();
 		} catch (FileNotFoundException e) {
+			Debug.Log (e);
 			playerData = new PlayerData ();
 		}
 

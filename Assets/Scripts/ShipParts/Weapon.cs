@@ -6,17 +6,22 @@ public class Weapon : MonoBehaviour {
 	private int cooldown;
 	private int cooldownCurrent;
 
-
-
-	private static Object prefab = Resources.Load ("Prefabs/weapon");
+	private static Object weaponPrefab;
 
 	public static GameObject CreateWeapon(WeaponData data) {
-		GameObject newWeapon = Instantiate(prefab, Vector2.zero, Quaternion.identity) as GameObject;
+		GameObject newWeapon = Instantiate(GetWeaponPrefab(), Vector2.zero, Quaternion.identity) as GameObject;
 
 		Weapon weapon = newWeapon.GetComponent<Weapon> ();
 		weapon.InitWeapon (data);
 
 		return newWeapon;
+	}
+
+	private static Object GetWeaponPrefab() {
+		if (weaponPrefab == null) {
+			weaponPrefab = Resources.Load ("Prefabs/weapon");
+		}
+		return weaponPrefab;
 	}
 
 	private void InitWeapon(WeaponData data) {

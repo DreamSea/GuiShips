@@ -7,17 +7,12 @@ public class PlayerLogic : MonoBehaviour {
     private float speed;
     private float maxSpeed;
 
-    private Vector2 direction;
-
 	private ICollection<Weapon> weapons = new List<Weapon> (); 
+	private ICollection<Engine> engines = new List<Engine>();
 
-    public Vector2 getDirection()
+    private Vector2 getDirection()
     {
-        return direction;
-    }
-    public void setDirection(Vector2 dir)
-    {
-        direction = dir;
+		return rb2D.transform.rotation * Vector2.up;
     }
 
 	private Rigidbody2D rb2D;
@@ -37,18 +32,22 @@ public class PlayerLogic : MonoBehaviour {
 			player.InitPlayer (data);
 		} else {
 			player.AddPlainWeapon ();
+			player.AddPlainEngine ();
 		}
 
 		return newPlayer;
 	}
 
 	private void InitPlayer(PlayerData data) {
-		Debug.Log (data.GetWeaponData());
+		//Debug.Log (data.GetWeaponData());
 		foreach (WeaponData w in data.GetWeaponData()) {
 			weapons.Add (Weapon.CreateWeapon (w).GetComponent<Weapon> ());
 		}
 		if (weapons.Count == 0) {
 			AddPlainWeapon ();
+		}
+		if (engines.Count == 0) {
+			AddPlainEngine ();
 		}
 	}
 
@@ -59,28 +58,23 @@ public class PlayerLogic : MonoBehaviour {
 		weapons.Add (Weapon.CreateWeapon (plain).GetComponent<Weapon> ());
 	}
 
+	// default engine for testing purposes
+	private void AddPlainEngine() {
+		EngineData plain = new EngineData();
+		engines.Add (Engine.CreateEngine (plain).GetComponent<Engine> ());
+	}
+
 
 
 	void Start () {
 		speed = 10;
 		maxSpeed = 5;
 		rb2D = GetComponent<Rigidbody2D>();
-        direction = Vector2.right;
 	}
 
 	void FixedUpdate()
 	{
-		float inputX = Input.GetAxis("Horizontal");
-		float inputY = Input.GetAxis("Vertical");
-
-		rb2D.AddRelativeForce (Vector2.right * inputX * speed);
-		rb2D.AddRelativeForce (Vector2.up * inputY * speed);
-
-        // store rotation into direction vector
-
-		if (rb2D.velocity.magnitude > maxSpeed) {
-			rb2D.velocity = rb2D.velocity.normalized * maxSpeed;
-		}
+		DoEngines ();
 
 		if (Input.GetKey ("space")) {
 			FireWeapons ();
@@ -100,6 +94,33 @@ public class PlayerLogic : MonoBehaviour {
 		foreach (Weapon w in weapons) {
 			w.Fire (rb2D.position, getDirection());
 		}
-			
+	}
+
+	private void DoEngines() {
+		float fowardness = Input.GetAxis ("Vertical");
+		float turn = Input.GetAxis ("Horizontal");
+		foreach (Engine e in engines) {
+			// 'up' is now forward.
+			rb2D.AddRelativeForce (Vector2.up * e.CalculateThrust (fowardness));
+			rb2D.AddTorque (e.CalculateTorque (-turn));
+		}
+
+		// cap movement speed
+		if (rb2D.velocity.magnitude > maxSpeed) {
+			rb2D.velocity = rb2D.velocity.normalized * maxSpeed;
+		}
+		if (rb2D.angularVelocity > maxSpeed*10) {
+			rb2D.angularVelocity = maxSpeed*10;
+		}
+		if (rb2D.angularVelocity < -maxSpeed*10) {
+			rb2D.angularVelocity = -maxSpeed*10;
+		}
+
+		//float inputY = Input.GetAxis("Vertical");
+
+		//rb2D.AddRelativeForce (Vector2.right * inputX * speed);
+		//rb2D.AddRelativeForce (Vector2.up * inputY * speed);
+
+		// store rotation into direction vector
 	}
 }
