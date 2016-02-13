@@ -32,6 +32,7 @@ public class BulletLogic : MonoBehaviour {
 		maxSpeed = 250;
 		rb2D.AddRelativeForce(direction * maxSpeed);
 		currentLife = lifespan;
+		damage = 1;
 	}
 
     void Start()
@@ -49,6 +50,14 @@ public class BulletLogic : MonoBehaviour {
         // On collision stuff
 
     }
+
+	void OnTriggerEnter2D(Collider2D other) {
+		//Debug.Log (other.gameObject.tag);
+		if (other.gameObject.tag == "Enemy") {
+			other.gameObject.GetComponent<Health> ().Damage (damage);
+			Destroy (this.gameObject);
+		}
+	}
 
 	void SetDirection(Vector2 direction) {
 		this.direction = direction;
