@@ -17,8 +17,9 @@ public class RootController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Debug.Log ("RootController: Start "+gameState.getPlayerData().getCount());
-		Instantiate (player, Vector3.zero, Quaternion.identity).name = "Player";
-		setupPlayer ();
+
+		player = PlayerLogic.CreatePlayer (Vector2.zero, gameState.getPlayerData());
+
 	}
 
 	void Awake () {
@@ -27,7 +28,7 @@ public class RootController : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		Debug.Log ("RootController: Update");
+		//Debug.Log ("RootController: Update");
 	}
 
 	// stuff like specific level multipliers go here

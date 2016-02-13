@@ -16,6 +16,6 @@ public class HUD : MonoBehaviour {
 	}
 
 	void OnGUI() {
-		GUI.Box (new Rect (20, 10, 100, 40), "Time: "+stage.getGameTime()/10, style);
+		GUI.Box (new Rect (20, 10, 100, 40), "Time: "+stage.getGameTime(), style);
 	}
 }

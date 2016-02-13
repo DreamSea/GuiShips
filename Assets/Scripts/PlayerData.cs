@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -13,8 +14,14 @@ public class PlayerData : ISerializable {
 
 	private int count;
 
+	private IList<WeaponData> weapons;
+
 	public void bump() {
 		count++;
+	}
+
+	public IList<WeaponData> GetWeaponData() {
+		return weapons;
 	}
 
 	public int getCount() {
@@ -23,14 +30,34 @@ public class PlayerData : ISerializable {
 
 	// default constructor?
 	public PlayerData(){
+		weapons = new List<WeaponData> ();
 	}
 
 	public PlayerData(SerializationInfo info, StreamingContext context) {
-		count = (int)info.GetValue ("count", typeof(int));
+		weapons = new List<WeaponData> ();
+		
+		foreach(SerializationEntry entry in info) {
+			switch(entry.Name) {
+			case "count":
+				count = (int)info.GetValue ("count", typeof(int));
+				break;
+			case "weaponCount":
+				for (int i = 0; i < (int)info.GetValue("weaponCount", typeof(int)); i++){
+					WeaponData current = new WeaponData ();
+					current.SetCooldown ((int)info.GetValue ("weaponCD_" + i, typeof(int)));
+					weapons.Add (current);
+				}
+				break;
+			}
+		}
 	}
 
 	public void GetObjectData(SerializationInfo info, StreamingContext context) {
 		info.AddValue ("count", count);
+		info.AddValue ("weaponCount", weapons.Count);
+		for (int i = 0; i < weapons.Count; i++) {
+			info.AddValue ("weaponCD_" + i, weapons [i].GetCooldown ());
+		}
 	}
 }
 

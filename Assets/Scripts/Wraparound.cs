@@ -13,8 +13,7 @@ public class Wraparound : MonoBehaviour {
 		config = GameObject.Find ("StageLogic").GetComponent<Configuration> ();
 	}
 	
-	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 		Vector2 myPosition = rb2D.position;
 		if (myPosition.x > config.getRightBoundary()) {
 			rb2D.MovePosition(rb2D.position + Vector2.left*(config.getWidth()));

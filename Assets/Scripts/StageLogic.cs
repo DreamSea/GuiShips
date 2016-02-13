@@ -6,12 +6,17 @@ public class StageLogic : MonoBehaviour {
 	int gameTime;
 	private Configuration config;
 
+	private GameObject player;
+	private GameState gameState;
+
 	public Rigidbody2D enemyA;
 
 
 	void Start () {
 		config = this.GetComponent<Configuration> ();
+		gameState = Object.FindObjectOfType<GameState> ();
 		gameTime = 0;
+		player = PlayerLogic.CreatePlayer (Vector2.zero, gameState.getPlayerData());
 	}
 
 	void FixedUpdate () {
